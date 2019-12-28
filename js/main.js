@@ -24,6 +24,9 @@ if (num <= 20) {
         }
         if ($("ul>#a>#num")[4].innerHTML === parseInt(num / 4 + 1).toString()) {
             $("#next").addClass("disabled");
+            for (let i = 3; i >= num % 4; i--) {
+                $("#article>a")[i].style.visibility = "hidden";
+            }
         }
     })
     $("#first").click(function() {
@@ -37,6 +40,9 @@ if (num <= 20) {
         }
         if ($("ul>#a>#num")[4].innerHTML !== parseInt(num / 4 + 1).toString()) {
             $("#next").removeClass("disabled");
+            for (let i = 3; i >= num % 4; i--) {
+                $("#article>a")[i].style.visibility = "visible";
+            }
         }
     })
 }
