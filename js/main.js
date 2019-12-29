@@ -1,4 +1,4 @@
-var num = 25;
+var num = 14;
 if (num <= 20) {
     $("#next")[0].innerHTML = "";
     if (num <= 4) {
@@ -12,6 +12,17 @@ if (num <= 20) {
     } else {
         $("ul>#a:gt(4)").html("");
     }
+    var l = parseInt(num / 4);
+    $("ul>#a").eq(l).click(function() {
+        for (let i = 3; i >= num % 4; i--) {
+            $("#article>a")[i].style.visibility = "hidden";
+        }
+    })
+    $("ul>#a:lt(1)").click(function() {
+        for (let i = 3; i >= num % 4; i--) {
+            $("#article>a")[i].style.visibility = "visible";
+        }
+    })
 } else {
     $("#next").click(function() {
         if ($("ul>#a>#num")[4].innerHTML !== parseInt(num / 4 + 1).toString()) {
@@ -24,9 +35,6 @@ if (num <= 20) {
         }
         if ($("ul>#a>#num")[4].innerHTML === parseInt(num / 4 + 1).toString()) {
             $("#next").addClass("disabled");
-            for (let i = 3; i >= num % 4; i--) {
-                $("#article>a")[i].style.visibility = "hidden";
-            }
         }
     })
     $("#first").click(function() {
@@ -40,9 +48,19 @@ if (num <= 20) {
         }
         if ($("ul>#a>#num")[4].innerHTML !== parseInt(num / 4 + 1).toString()) {
             $("#next").removeClass("disabled");
+
+        }
+    })
+    $("[name='is']").click(function() {
+        if ($("ul>#a>#num")[4].innerHTML === parseInt(num / 4 + 1).toString()) {
             for (let i = 3; i >= num % 4; i--) {
-                $("#article>a")[i].style.visibility = "visible";
+                $("#article>a")[i].style.visibility = "hidden";
             }
+        }
+    })
+    $("ul>#a:lt(4)").click(function() {
+        for (let i = 3; i >= num % 4; i--) {
+            $("#article>a")[i].style.visibility = "visible";
         }
     })
 }

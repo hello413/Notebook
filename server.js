@@ -48,6 +48,7 @@ http.createServer(function(req, res) {
             })
         })
     }
+    //登录
     if (pathname == '/login') {
         var postdata = "";
         req.on("data", function(postDataChunk) {
