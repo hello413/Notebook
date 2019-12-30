@@ -18,11 +18,13 @@ if (num <= 20) {
             $("#article>a")[i].style.visibility = "hidden";
         }
     })
-    $("ul>#a:lt(1)").click(function() {
-        for (let i = 3; i >= num % 4; i--) {
-            $("#article>a")[i].style.visibility = "visible";
-        }
-    })
+    for (var i = 0; i < l; i++) {
+        $("ul>#a").eq(i).click(function() {
+            for (let i = 3; i >= num % 4; i--) {
+                $("#article>a")[i].style.visibility = "visible";
+            }
+        })
+    }
 } else {
     $("#next").click(function() {
         if ($("ul>#a>#num")[4].innerHTML !== parseInt(num / 4 + 1).toString()) {
