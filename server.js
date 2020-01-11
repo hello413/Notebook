@@ -30,7 +30,7 @@ http.createServer(function(req, res) {
             var password = params.password
             console.log(params)
             db.query(`select username from User where username='${username}'`, function(err, data) {
-                if (data !== undefined) {
+                if (data == undefined) {
                     res.end("此用户名已存在")
                 } else {
                     db.query(`insert into User(username,password,email) values('${username}','${password}','${email}')`, function(err, data) {
@@ -52,23 +52,49 @@ http.createServer(function(req, res) {
         });
         req.on("end", function() {
             var params = querystring.parse(postData);
-            var username = params.username
+            var email = params.email
             var password = params.password
-            db.query(`select 学号,密码 from student where 学号='${username}'and 密码='${password}'`, function(err, data) {
+            db.query(`select email,password from user where email='${email}'and password='${password}'`, function(err, data) {
+                //查询数据库
+                if (err) {
+                    console.log("error")
+                    res.write("数据库出错了")
+                    res.end();
+                } else if (data.length == 0) { //没有数据
+                    console.log("no have")
+                    res.write("");
+                    res.end();
+                } else if (data.length != 0) {
+                    var s = JSON.stringify(data)
+                    console.log(s)
+                    res.end(s);
+                }
+            })
+        })
+    }
+    //主页
+    if (pathname == '/main') {
+        var postData = "";
+        req.on("data", function(postDataChunk) {
+            postData += postDataChunk;
+        });
+        req.on("end", function() {
+            var params = querystring.parse(postData);
+            var search = params.search
+            var Email = params.Email
+            db.query(`select node.tag,node.notename,node.notecontent from note,user where notename='${search}'and note.user_id=user.u_id and user.email = '${Email}'`, function(err, data) {
                 //查询数据库
                 if (err) {
                     res.write("数据库出错了")
                     res.end();
                 } else if (data.length == 0) { //没有数据
+                    console.log("no have")
                     res.write("");
                     res.end();
                 } else if (data.length != 0) {
-                    db.query(`select 姓名 from student where 学号='${username}'`, function(err, data) {
-                        var s = JSON.stringify(data)
-                        name1 = s.substring(s.indexOf(":") + 2, s.lastIndexOf("}") - 1)
-                        res.end(s);
-                        db.query(`update user set username='${name1}',sno='${username}'`, function(err, data) {})
-                    })
+                    var s = JSON.stringify(data)
+                    console.log(s)
+                    res.end(s);
                 }
             })
         })

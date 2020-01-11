@@ -1,4 +1,5 @@
 var num = 14;
+$('#news>h4>small')[0].innerHTML = num;
 if (num <= 20) {
     $("#next")[0].innerHTML = "";
     if (num <= 4) {

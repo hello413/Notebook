@@ -36,6 +36,7 @@
 |       age        |     int     |                            |           年龄           |
 | personal_profile |  TINYTEXT   |                            |    个人简介/自我励志     |
 |       u_id       |     int     | AUTO_INCREMENT,primary key |   标识用户主键，自增长   |
+|       email        |     varchar(20)     |            not null      |           邮箱          |
 
 |   Note表    |             |                            |            |
 | :---------: | :---------: | :------------------------: | :--------: |

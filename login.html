@@ -14,7 +14,7 @@
         <div class="container">
             <h1>Login in</h1>
             <form>
-                <input type="text" placeholder="Your username" id="username" />
+                <input type="text" placeholder="Your email" id="email" />
                 <input type="password" placeholder="password" id="password" />
                 <div style="width: 320px;height:40px;margin: 0 auto;position:relative;bottom: 30px;">
                     <input type="text" placeholder="verify" id="code_input" style="width: 160px;float: left">
@@ -23,7 +23,7 @@
                 </div>
                 <div style="color:crimson; height: 20px;" id="return"></div>
                 <div style="height: 64px"></div>
-                <input type="button" id="my_button" value="Login in" />
+                <input type="button" id="login" value="Login in" />
                 <p class="change_link" align="center">
                     <span class="text">No have an account?</span>
                     <a href="sign.html" class="to_login"> Go and sign up</a>
@@ -46,27 +46,23 @@
 </body>
 <script src="js/verify.js"></script>
 <script src="js/jquery.js"></script>
+<script src="js/email.js"></script>
 <script>
     var verifyCode = new GVerify("v_container");
-    document.getElementById("my_button").onclick = function() {
-        if (!$('#username').val() || !$('#password').val()) {
-            alert("信息输入不完整,注册失败")
+    $("#login").onclick = function() {
+        if (!$('#email').val() || !$('#password').val()) {
+            alert("信息输入不完整")
         } else {
-            var res = verifyCode.validate(document.getElementById("code_input").value);
-            if (res) {
+            var res1 = verifyCode.validate(document.getElementById("code_input").value);
+            if (res1) {
                 $.post('http://127.0.0.1:8084/' + 'login', {
-                    username: $('#username').val(),
-                    password: $('#password').val(),
+                    email: $('#email').val(),
+                    password: $('#password').val()
                 }).then(res => {
                     if (res == "") {
                         alert("学号或密码输入有误,请重新输入")
                     } else {
-                        var a = eval(res)
-                        var b = res
-                        if (typeof(b) != String) {
-                            alert("欢迎你," + a[0].姓名 + "同学")
-                            window.location.href = "main.html";
-                        }
+                        window.location.href = "main.html";
                     }
                 }, err => {
                     console.log(err);
