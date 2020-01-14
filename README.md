@@ -46,6 +46,8 @@
 |     tag     | varchar(32) |                            |  笔记标签  |
 |   user_id   |     int     |          not null          | 关联用户id |
 | notecontent |  TINYTEXT   |                            |  笔记内容  |
+|   like_num   |     int     |          not null          | 点赞量 |
+|   read_num   |     int     |          not null          | 浏览量 |
 
 ##### 前端
 
