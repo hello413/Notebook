@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const url = require('url');
 const fs = require('fs');
 const querystring = require('querystring');
+console
 
 //连接数据库服务器
 var db = mysql.createPool({
@@ -30,14 +31,20 @@ http.createServer(function(req, res) {
             var password = params.password
             console.log(params)
             db.query(`select username from User where username='${username}'`, function(err, data) {
-                if (data == undefined) {
+                if (data.length > 0) {
                     res.end("此用户名已存在")
                 } else {
-                    db.query(`insert into User(username,password,email) values('${username}','${password}','${email}')`, function(err, data) {
-                        if (err) {
-                            res.end("数据库出错")
+                    db.query(`select email from User where email='${email}'`, function(err, data) {
+                        if (data.length > 0) {
+                            res.end("此邮箱已占用")
                         } else {
-                            res.end("注册成功")
+                            db.query(`insert into User(username,password,email) values('${username}','${password}','${email}')`, function(err, data) {
+                                if (err) {
+                                    res.end("数据库出错")
+                                } else {
+                                    res.end("注册成功")
+                                }
+                            })
                         }
                     })
                 }
@@ -45,7 +52,7 @@ http.createServer(function(req, res) {
         })
     }
     //登录
-    if (pathname == '/login') {
+    else if (pathname == '/login') {
         var postData = "";
         req.on("data", function(postDataChunk) {
             postData += postDataChunk;
@@ -72,8 +79,9 @@ http.createServer(function(req, res) {
             })
         })
     }
+
     //主页
-    if (pathname == '/main') {
+    else if (pathname == '/main') {
         var postData = "";
         req.on("data", function(postDataChunk) {
             postData += postDataChunk;
@@ -81,7 +89,6 @@ http.createServer(function(req, res) {
         req.on("end", function() {
             var params = querystring.parse(postData);
             var search = params.search
-            var Email = params.Email
             db.query(`select node.tag,node.notename,node.notecontent from note,user where notename='${search}'and note.user_id=user.u_id and user.email = '${Email}'`, function(err, data) {
                 //查询数据库
                 if (err) {

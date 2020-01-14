@@ -46,10 +46,9 @@
 </body>
 <script src="js/verify.js"></script>
 <script src="js/jquery.js"></script>
-<script src="js/email.js"></script>
 <script>
     var verifyCode = new GVerify("v_container");
-    $("#login").onclick = function() {
+    $("#login").click(async function(e) {
         if (!$('#email').val() || !$('#password').val()) {
             alert("信息输入不完整")
         } else {
@@ -71,7 +70,7 @@
                 alert("验证码不正确")
             }
         }
-    }
+    })
 </script>
 
 </html>
