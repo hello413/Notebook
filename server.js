@@ -75,11 +75,30 @@ http.createServer(function(req, res) {
                     var s = JSON.stringify(data)
                     console.log(s)
                     res.end(s);
+                    db.query(`update session set Email='${email}' where id = 1`, function(err, data) {})
                 }
             })
         })
     }
-
+    //名字信息展示
+    if (pathname == '/name') {
+        db.query(`select Email from session where id = 1`, function(err, data) {
+            var s1 = JSON.stringify(data)
+            console.log(s1)
+            var s2 = eval(s1)
+            var s3 = s2[0].Email
+            db.query(`SELECT user.username,count(*) as count0,sum(note.like_num) as sum0 ,sum(note.read_num) as sum1 from test.user,test.note where user.email='${s3}' and user.u_id=note.user_id`, function(err, data) {
+                var s = JSON.stringify(data)
+                console.log(s)
+                if (err) {
+                    res.write("数据库错误");
+                    res.end();
+                } else {
+                    res.end(s)
+                }
+            })
+        })
+    }
     //主页
     else if (pathname == '/main') {
         var postData = "";

@@ -36,17 +36,16 @@
     <div id="main" class="row">
         <div class="col-md-3 col-md-offset-1">
             <div class="main-left">
-                <br>
-                <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=132720517,1989090148&fm=15&gp=0.jpg" alt="网络不好" class="img-circle" width="80px" style="margin-left: 130px">
-                <form action="http://localhost:8080/name" method="post">
-
-                </form>
-                <div style="height: 60px"></div>
+                <br><br>
+                <div style="text-align: center;">
+                    <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=132720517,1989090148&fm=15&gp=0.jpg" alt="网络不好" class="img-circle" width="80px">
+                </div>
+                <div style="height: 60px;text-align:center;color: cornflowerblue;" id="name"></div>
                 <div class="message" style="margin-left: 100px" id="news">
-                    <h4>总笔记数： <small id="name0">100</small></h4><br>
-                    <h4>今日笔记数： <small id="birthday0">10</small></h4><br>
-                    <h4>访问量： <small id="address0">0</small></h4><br>
-                    <h4>获赞数： <small id="university0">0</small></h4>
+                    <h4>总笔记数： <small id="Sum">100</small></h4><br>
+                    <h4>今日笔记数： <small id="todaySum">10</small></h4><br>
+                    <h4>访问量： <small id="seenSum">0</small></h4><br>
+                    <h4>获赞数： <small id="likeSum">0</small></h4>
                 </div>
                 <div style="height: 255px"></div>
             </div>
@@ -127,16 +126,7 @@
     </div>
     <div style="height: 20px;"></div>
 </body>
+
 <script src="js/main.js"></script>
-<script>
-    $.post('http://127.0.0.1:8084/' + 'main', {
-        search: $('.search>input').val(),
-        Email: Email
-    }).then(res => {
-        alert(res);
-    }, err => {
-        console.log(err);
-    })
-</script>
 
 </html>
