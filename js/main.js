@@ -6,6 +6,23 @@ $.post('http://127.0.0.1:8084/' + 'name', {}).then(res => {
 $.post('http://127.0.0.1:8084/' + 'message', {}).then(res => {
     var a = eval(res)
     var num = a[0].count0;
+    paging(num)
+    $('#Sum')[0].innerHTML = a[0].count0;
+    if (a[0].sum0 != null) {
+        $('#seenSum')[0].innerHTML = a[0].sum0;
+    }
+    if (a[0].sum1 != null) {
+        $('#likeSum')[0].innerHTML = a[0].sum1;
+    }
+}, err => {
+    console.log(err);
+})
+
+$(".work").click(async function(e) {
+    alert(i);
+})
+
+function paging(num) {
     if (num <= 20) {
         $("#next")[0].innerHTML = "";
         if (num <= 4) {
@@ -76,13 +93,4 @@ $.post('http://127.0.0.1:8084/' + 'message', {}).then(res => {
             }
         })
     }
-    $('#Sum')[0].innerHTML = a[0].count0;
-    if (a[0].sum0 != null) {
-        $('#seenSum')[0].innerHTML = a[0].sum0;
-    }
-    if (a[0].sum1 != null) {
-        $('#likeSum')[0].innerHTML = a[0].sum1;
-    }
-}, err => {
-    console.log(err);
-})
+}
