@@ -18,10 +18,6 @@ $.post('http://127.0.0.1:8084/' + 'message', {}).then(res => {
     console.log(err);
 })
 
-$(".work").click(async function(e) {
-    alert(i);
-})
-
 function paging(num) {
     if (num <= 20) {
         $("#next")[0].innerHTML = "";
