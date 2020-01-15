@@ -65,9 +65,8 @@
 <script>
     $.post('http://127.0.0.1:8084/' + 'read', {}).then(res => {
         var a = eval(res)
-        $("#notename")[0].innerHTML = a[0].notename
-        alert($('#notename')[0].value)
-        $('#tag')[0].innerHTML = a[0].tag
+        $("#notename").val(a[0].notename)
+        $('#tag').val(a[0].tag)
         $('#notecontent')[0].innerHTML = a[0].notecontent
     }, err => {
         console.log(err);

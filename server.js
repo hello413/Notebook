@@ -217,7 +217,7 @@ http.createServer(function(req, res) {
                         res.write("数据库错误");
                         res.end();
                     } else {
-                        res.write("删除成功")
+                        res.write("修改成功")
                         res.end()
                     }
                 })
