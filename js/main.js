@@ -18,6 +18,32 @@ $.post('http://127.0.0.1:8084/' + 'message', {}).then(res => {
     console.log(err);
 })
 
+$.post('http://127.0.0.1:8084/' + 'main', {}).then(res => {
+    var a = eval(res)
+    for (let i = 1; i < 5; i++) {
+        $('#name' + i)[0].innerHTML = a[i - 1].notename;
+        $('#notecontent' + i)[0].innerHTML = '&emsp;&emsp;' + a[i - 1].notecontent;
+        $('#tag' + i)[0].innerHTML = a[i - 1].tag;
+        $('#read_num' + i)[0].innerHTML = '阅读数：' + a[i - 1].read_num;
+    }
+}, err => {
+    console.log(err);
+})
+
+for (let i = 1; i < 5; i++) {
+    $(".work" + i).on("click", function() {
+        alert(i)
+        $.post('http://127.0.0.1:8084/' + 'noteid', {
+            noteid: i
+        }).then(res => {
+            alert(res);
+        }, err => {
+            console.log(err);
+        })
+    })
+}
+
+
 function paging(num) {
     if (num <= 20) {
         $("#next")[0].innerHTML = "";

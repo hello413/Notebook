@@ -3,7 +3,6 @@ const mysql = require('mysql');
 const url = require('url');
 const fs = require('fs');
 const querystring = require('querystring');
-console
 
 //连接数据库服务器
 var db = mysql.createPool({
@@ -29,7 +28,6 @@ http.createServer(function(req, res) {
             var username = params.username
             var email = params.email
             var password = params.password
-            console.log(params)
             db.query(`select username from User where username='${username}'`, function(err, data) {
                 if (data.length > 0) {
                     res.end("此用户名已存在")
@@ -64,7 +62,6 @@ http.createServer(function(req, res) {
             db.query(`select email,password from user where email='${email}'and password='${password}'`, function(err, data) {
                 //查询数据库
                 if (err) {
-                    console.log("error")
                     res.write("数据库出错了")
                     res.end();
                 } else if (data.length == 0) { //没有数据
@@ -73,7 +70,6 @@ http.createServer(function(req, res) {
                     res.end();
                 } else if (data.length != 0) {
                     var s = JSON.stringify(data)
-                    console.log(s)
                     res.end(s);
                     db.query(`update session set Email='${email}' where id = 1`, function(err, data) {})
                 }
@@ -101,7 +97,6 @@ http.createServer(function(req, res) {
             var s1 = eval(JSON.stringify(data))[0].Email
             db.query(`SELECT count(*) as count0,sum(note.like_num) as sum0 ,sum(note.read_num) as sum1 from test.user,test.note where user.email='${s1}' and user.u_id=note.user_id`, function(err, data) {
                 var s = JSON.stringify(data)
-                console.log(s)
                 if (err) {
                     res.write("数据库错误");
                     res.end();
@@ -111,30 +106,37 @@ http.createServer(function(req, res) {
             })
         })
     }
-    //主页
+    //主页获取所有文章
     if (pathname == '/main') {
+        db.query(`select Email from session where id = 1`, function(err, data) {
+            var s1 = eval(JSON.stringify(data))[0].Email
+            db.query(`select u_id from user where email = '${s1}'`, function(err, data) {
+                var s2 = eval(JSON.stringify(data))[0].u_id
+                db.query(`select notename,notecontent,tag,read_num from note where user_id = '${s2}'`, function(err, data) {
+                    var s = JSON.stringify(data)
+                    if (err) {
+                        res.write("数据库错误");
+                        res.end();
+                    } else {
+                        res.end(s)
+                    }
+                })
+            })
+        })
+    }
+    //改session
+    if (pathname == '/noteid') {
+        console.log("sadas")
         var postData = "";
         req.on("data", function(postDataChunk) {
             postData += postDataChunk;
         });
         req.on("end", function() {
             var params = querystring.parse(postData);
-            var search = params.search
-            db.query(`select node.tag,node.notename,node.notecontent from note,user where notename='${search}'and note.user_id=user.u_id and user.email = '${Email}'`, function(err, data) {
-                //查询数据库
-                if (err) {
-                    res.write("数据库出错了")
-                    res.end();
-                } else if (data.length == 0) { //没有数据
-                    console.log("no have")
-                    res.write("");
-                    res.end();
-                } else if (data.length != 0) {
-                    var s = JSON.stringify(data)
-                    console.log(s)
-                    res.end(s);
-                }
-            })
+            console.log(params)
+            var noteid = params.noteid
+            console.log(noteid)
+            db.query(`update session set note_id='${noteid}' where id = 1`, function(err, data) {})
         })
     }
     //写文章
@@ -148,14 +150,12 @@ http.createServer(function(req, res) {
             var notename = params.notename
             var notecontent = params.notecontent
             var tag = params.tag
-            console.log(params)
             db.query(`select Email from session where id = 1`, function(err, data) {
                 var s1 = eval(JSON.stringify(data))[0].Email
                 db.query(`select u_id from user where email='${s1}'`, function(err, data) {
                     var s2 = eval(JSON.stringify(data))[0].u_id
                     db.query(`insert into note(notename,notecontent,tag,user_id) values ('${notename}','${notecontent}','${tag}',${s2})`, function(err, data) {
                         var s = JSON.stringify(data)
-                        console.log(s)
                         if (err) {
                             res.write("数据库错误");
                             res.end();
@@ -173,7 +173,6 @@ http.createServer(function(req, res) {
             var s1 = eval(JSON.stringify(data))[0].note_id
             db.query(`SELECT notename,notecontent,tag from note where n_id=${s1}`, function(err, data) {
                 var s = JSON.stringify(data)
-                console.log(s)
                 if (err) {
                     res.write("数据库错误");
                     res.end();
@@ -209,7 +208,6 @@ http.createServer(function(req, res) {
             var notename = params.notename
             var notecontent = params.notecontent
             var tag = params.tag
-            console.log(params)
             db.query(`select note_id from session where id = 1`, function(err, data) {
                 var s1 = eval(JSON.stringify(data))[0].note_id
                 db.query(`UPDATE note SET notename='${notename}',notecontent='${notecontent}',tag='${tag}' WHERE (n_id = '${s1}');`, function(err, data) {
