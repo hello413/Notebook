@@ -14,39 +14,29 @@
 <body>
     <div id="all">
         <div style="font-size: 50px;height: 100px; text-align: center;color: #009689; font-weight: bold;">
-            <input type="text" placeholder="标题(0/100)" style="border-bottom:4px solid; pointer-events: auto; width: 80%; height: 60px; font-size: 35px">
+            <input type="text" placeholder="标题(0/100)" id="notename" style="border-bottom:4px solid; pointer-events: auto; width: 80%; height: 60px; font-size: 35px">
             <button type="button" id="update" class="btn btn-danger">保存文章</button>
         </div>
         <div id="layout">
             <div id="test-editormd">
-                <textarea style="display:none;"></textarea>
+                <textarea style="display:none;" id="notecontent"></textarea>
             </div>
         </div>
         <script src="markdown/editor.md-master/examples/js/jquery.min.js"></script>
         <script src="markdown/editor.md-master/editormd.js"></script>
         <script type="text/javascript">
             var testEditor;
-
             $(function() {
-                // You can custom @link base url.
                 editormd.urls.atLinkBase = "https://github.com/";
-
                 testEditor = editormd("test-editormd", {
                     width: "90%",
                     height: 720,
                     toc: true,
-                    //atLink    : false,    // disable @link
-                    //emailLink : false,    // disable email address auto link
                     todoList: true,
                     path: 'markdown/editor.md-master/lib/'
                 });
             });
         </script>
-        <div class="center-block" style="text-align: center">
-            <hr>
-
-
-        </div>
     </div>
     <div id="back" class="hide">
         <br>
@@ -55,12 +45,13 @@
                 <br>
                 <h2>个人信息</h2>
                 <br>
-                <h4>权限： &emsp;&emsp;&emsp;<select>
+                <h4>权限： &emsp;&emsp;
+                    <select style="width: 120px;" id="jurisd">
                     <option value="1">public</option>
-                    <option selected="selected" value="2" style="width: 100px;">private</option>
+                    <option value="2">private</option>
                   </select></h4>
                 <br>
-                <h4>分类： &emsp;&emsp;&emsp;<input type="text" style="width: 120px;"></h4>
+                <h4>分类： &emsp;&emsp;<input type="text" style="width: 120px;" id="tag"></h4>
                 <br><br>
                 <div style="text-align:center" id="m0">
                     <button type="button" class="btn btn-danger" style="width:70px" id="button1">确定</button> &emsp;&emsp;

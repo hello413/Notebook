@@ -52,7 +52,7 @@ http.createServer(function(req, res) {
         })
     }
     //登录
-    else if (pathname == '/login') {
+    if (pathname == '/login') {
         var postData = "";
         req.on("data", function(postDataChunk) {
             postData += postDataChunk;
@@ -83,11 +83,8 @@ http.createServer(function(req, res) {
     //名字信息展示
     if (pathname == '/name') {
         db.query(`select Email from session where id = 1`, function(err, data) {
-            var s1 = JSON.stringify(data)
-            console.log(s1)
-            var s2 = eval(s1)
-            var s3 = s2[0].Email
-            db.query(`SELECT user.username,count(*) as count0,sum(note.like_num) as sum0 ,sum(note.read_num) as sum1 from test.user,test.note where user.email='${s3}' and user.u_id=note.user_id`, function(err, data) {
+            var s1 = eval(JSON.stringify(data)).Email
+            db.query(`SELECT user.username,count(*) as count0,sum(note.like_num) as sum0 ,sum(note.read_num) as sum1 from test.user,test.note where user.email='${s1}' and user.u_id=note.user_id`, function(err, data) {
                 var s = JSON.stringify(data)
                 console.log(s)
                 if (err) {
@@ -100,7 +97,7 @@ http.createServer(function(req, res) {
         })
     }
     //主页
-    else if (pathname == '/main') {
+    if (pathname == '/main') {
         var postData = "";
         req.on("data", function(postDataChunk) {
             postData += postDataChunk;
@@ -122,6 +119,36 @@ http.createServer(function(req, res) {
                     console.log(s)
                     res.end(s);
                 }
+            })
+        })
+    }
+    //写文章
+    if (pathname == '/write') {
+        var postdata = "";
+        req.on("data", function(postDataChunk) {
+            postdata += postDataChunk;
+        });
+        req.on("end", function() {
+            var params = querystring.parse(postdata);
+            var notename = params.notename
+            var notecontent = params.notecontent
+            var tag = params.tag
+            console.log(params)
+            db.query(`select Email from session where id = 1`, function(err, data) {
+                var s1 = eval(JSON.stringify(data))[0].Email
+                db.query(`select u_id from user where email='${s1}'`, function(err, data) {
+                    var s2 = eval(JSON.stringify(data))[0].u_id
+                    db.query(`insert into note(notename,notecontent,tag,user_id) values ('${notename}','${notecontent}','${tag}',${s2})`, function(err, data) {
+                        var s = JSON.stringify(data)
+                        console.log(s)
+                        if (err) {
+                            res.write("数据库错误");
+                            res.end();
+                        } else {
+                            res.end(s)
+                        }
+                    })
+                })
             })
         })
     }
