@@ -80,11 +80,26 @@ http.createServer(function(req, res) {
             })
         })
     }
-    //名字信息展示
+    //名字展示
     if (pathname == '/name') {
         db.query(`select Email from session where id = 1`, function(err, data) {
-            var s1 = eval(JSON.stringify(data)).Email
-            db.query(`SELECT user.username,count(*) as count0,sum(note.like_num) as sum0 ,sum(note.read_num) as sum1 from test.user,test.note where user.email='${s1}' and user.u_id=note.user_id`, function(err, data) {
+            var s1 = eval(JSON.stringify(data))[0].Email
+            db.query(`SELECT username from user where email='${s1}'`, function(err, data) {
+                var s = eval(JSON.stringify(data))[0].username
+                if (err) {
+                    res.write("数据库错误");
+                    res.end();
+                } else {
+                    res.end(s)
+                }
+            })
+        })
+    }
+    //信息展示
+    if (pathname == '/message') {
+        db.query(`select Email from session where id = 1`, function(err, data) {
+            var s1 = eval(JSON.stringify(data))[0].Email
+            db.query(`SELECT count(*) as count0,sum(note.like_num) as sum0 ,sum(note.read_num) as sum1 from test.user,test.note where user.email='${s1}' and user.u_id=note.user_id`, function(err, data) {
                 var s = JSON.stringify(data)
                 console.log(s)
                 if (err) {
@@ -148,6 +163,63 @@ http.createServer(function(req, res) {
                             res.end(s)
                         }
                     })
+                })
+            })
+        })
+    }
+    //读文章
+    if (pathname == '/read') {
+        db.query(`select note_id from session where id = 1`, function(err, data) {
+            var s1 = eval(JSON.stringify(data))[0].note_id
+            db.query(`SELECT notename,notecontent,tag from note where n_id=${s1}`, function(err, data) {
+                var s = JSON.stringify(data)
+                console.log(s)
+                if (err) {
+                    res.write("数据库错误");
+                    res.end();
+                } else {
+                    res.end(s)
+                }
+            })
+        })
+    }
+    //删文章
+    if (pathname == '/delete') {
+        db.query(`select note_id from session where id = 1`, function(err, data) {
+            var s1 = eval(JSON.stringify(data))[0].note_id
+            db.query(`DELETE FROM note WHERE (n_id = '${s1}');`, function(err, data) {
+                if (err) {
+                    res.write("数据库错误");
+                    res.end();
+                } else {
+                    res.write("删除成功")
+                    res.end()
+                }
+            })
+        })
+    }
+    //改文章
+    if (pathname == '/update') {
+        var postdata = "";
+        req.on("data", function(postDataChunk) {
+            postdata += postDataChunk;
+        });
+        req.on("end", function() {
+            var params = querystring.parse(postdata);
+            var notename = params.notename
+            var notecontent = params.notecontent
+            var tag = params.tag
+            console.log(params)
+            db.query(`select note_id from session where id = 1`, function(err, data) {
+                var s1 = eval(JSON.stringify(data))[0].note_id
+                db.query(`UPDATE note SET notename='${notename}',notecontent='${notecontent}',tag='${tag}' WHERE (n_id = '${s1}');`, function(err, data) {
+                    if (err) {
+                        res.write("数据库错误");
+                        res.end();
+                    } else {
+                        res.write("删除成功")
+                        res.end()
+                    }
                 })
             })
         })

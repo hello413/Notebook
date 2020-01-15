@@ -1,4 +1,9 @@
 $.post('http://127.0.0.1:8084/' + 'name', {}).then(res => {
+    $('#name')[0].innerHTML = "<br>" + res
+}, err => {
+    console.log(err);
+})
+$.post('http://127.0.0.1:8084/' + 'message', {}).then(res => {
     var a = eval(res)
     var num = a[0].count0;
     if (num <= 20) {
@@ -70,9 +75,6 @@ $.post('http://127.0.0.1:8084/' + 'name', {}).then(res => {
                 $("#article>a")[i].style.visibility = "visible";
             }
         })
-    }
-    if (a[0].username != null) {
-        $('#name')[0].innerHTML = "<br>" + a[0].username
     }
     $('#Sum')[0].innerHTML = a[0].count0;
     if (a[0].sum0 != null) {
