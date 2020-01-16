@@ -200,6 +200,7 @@
     $("#delete").click(async function(e) {
         $.post('http://127.0.0.1:8084/' + 'delete', {}).then(res => {
             alert(res)
+            window.location.href = "main.html";
         }, err => {
             console.log(err);
         })

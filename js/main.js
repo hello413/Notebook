@@ -19,7 +19,7 @@ $.post('http://127.0.0.1:8084/' + 'message', {}).then(res => {
 })
 
 $.post('http://127.0.0.1:8084/' + 'main', {
-    first: 1
+    first: parseInt("1")
 }).then(res => {
     var a = eval(res)
     for (let i = 1; i < 5; i++) {
@@ -59,9 +59,25 @@ for (let i = 1; i < 5; i++) {
         }, err => {
             console.log(err);
         })
-
     })
 }
+
+// $('#true').on("click", function() {
+//     $.post('http://127.0.0.1:8084/' + 'main', {
+//         condition: $('')
+//     }).then(res => {
+//         var a = eval(res)
+//         for (let i = 1; i < 5; i++) {
+//             $('#name' + i)[0].innerHTML = a[i - 1].notename;
+//             $('#notecontent' + i)[0].innerHTML = '&emsp;&emsp;' + a[i - 1].notecontent;
+//             $('#tag' + i)[0].innerHTML = a[i - 1].tag;
+//             $('#read_num' + i)[0].innerHTML = '阅读数：' + a[i - 1].read_num;
+//         }
+//     }, err => {
+//         console.log(err);
+//     })
+
+// })
 
 function paging(num) {
     if (num <= 20) {
