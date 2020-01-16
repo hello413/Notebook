@@ -108,18 +108,29 @@ http.createServer(function(req, res) {
     }
     //主页获取所有文章
     if (pathname == '/main') {
-        db.query(`select Email from session where id = 1`, function(err, data) {
-            var s1 = eval(JSON.stringify(data))[0].Email
-            db.query(`select u_id from user where email = '${s1}'`, function(err, data) {
-                var s2 = eval(JSON.stringify(data))[0].u_id
-                db.query(`select notename,notecontent,tag,read_num from note where user_id = '${s2}'`, function(err, data) {
-                    var s = JSON.stringify(data)
-                    if (err) {
-                        res.write("数据库错误");
-                        res.end();
-                    } else {
-                        res.end(s)
-                    }
+        var postData = "";
+        req.on("data", function(postDataChunk) {
+            postData += postDataChunk;
+        });
+        req.on("end", function() {
+            var params = querystring.parse(postData);
+            var first = (parseInt(params.first) - 1) * 4
+            console.log(first)
+            db.query(`update session set paking='${parseInt(params.first)}' where id = 1`, function(err, data) {})
+            db.query(`select Email from session where id = 1`, function(err, data) {
+                var s1 = eval(JSON.stringify(data))[0].Email
+                db.query(`select u_id from user where email = '${s1}'`, function(err, data) {
+                    var s2 = eval(JSON.stringify(data))[0].u_id
+                    db.query(`select notename,notecontent,tag,read_num from note where user_id = '${s2}' limit ${first},4`, function(err, data) {
+                        var s = JSON.stringify(data)
+                        console.log(s)
+                        if (err) {
+                            res.write("数据库错误");
+                            res.end();
+                        } else {
+                            res.end(s)
+                        }
+                    })
                 })
             })
         })
@@ -133,10 +144,12 @@ http.createServer(function(req, res) {
         });
         req.on("end", function() {
             var params = querystring.parse(postData);
-            console.log(params)
-            var noteid = params.noteid
-            console.log(noteid)
-            db.query(`update session set note_id='${noteid}' where id = 1`, function(err, data) {})
+            var noteid = parseInt(params.noteid)
+            db.query(`select paking from session where id = 1`, function(err, data) {
+                var s1 = (parseInt(eval(JSON.stringify(data))[0].paking) - 1) * 4
+                console.log(noteid)
+                db.query(`update session set note_id='${noteid+s1}' where id = 1`, function(err, data) {})
+            })
         })
     }
     //写文章
@@ -154,13 +167,25 @@ http.createServer(function(req, res) {
                 var s1 = eval(JSON.stringify(data))[0].Email
                 db.query(`select u_id from user where email='${s1}'`, function(err, data) {
                     var s2 = eval(JSON.stringify(data))[0].u_id
-                    db.query(`insert into note(notename,notecontent,tag,user_id) values ('${notename}','${notecontent}','${tag}',${s2})`, function(err, data) {
-                        var s = JSON.stringify(data)
+                    db.query(`select notename from note where user_id='${s2}' and notename = '${notename}'`, function(err, data) {
                         if (err) {
                             res.write("数据库错误");
                             res.end();
+                        } else if (data.length != 0) {
+                            res.write("已经有这个文章题目了")
+                            console.log("err")
+                            res.end()
                         } else {
-                            res.end(s)
+                            db.query(`insert into note(notename,notecontent,tag,user_id) values ('${notename}','${notecontent}','${tag}',${s2})`, function(err, data) {
+                                var s = JSON.stringify(data)
+                                if (err) {
+                                    res.write("数据库错误");
+                                    res.end();
+                                } else {
+                                    res.write("添加成功")
+                                    res.end(s)
+                                }
+                            })
                         }
                     })
                 })

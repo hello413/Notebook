@@ -10,7 +10,7 @@ $("#update").on("click", function() {
                 notecontent: $('#notecontent').val(),
                 tag: $('#tag').val()
             }).then(res => {
-                alert("添加成功")
+                alert(res)
             }, err => {
                 console.log(err);
             })

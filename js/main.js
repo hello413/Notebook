@@ -18,7 +18,9 @@ $.post('http://127.0.0.1:8084/' + 'message', {}).then(res => {
     console.log(err);
 })
 
-$.post('http://127.0.0.1:8084/' + 'main', {}).then(res => {
+$.post('http://127.0.0.1:8084/' + 'main', {
+    first: 1
+}).then(res => {
     var a = eval(res)
     for (let i = 1; i < 5; i++) {
         $('#name' + i)[0].innerHTML = a[i - 1].notename;
@@ -32,7 +34,6 @@ $.post('http://127.0.0.1:8084/' + 'main', {}).then(res => {
 
 for (let i = 1; i < 5; i++) {
     $(".work" + i).on("click", function() {
-        alert(i)
         $.post('http://127.0.0.1:8084/' + 'noteid', {
             noteid: i
         }).then(res => {
@@ -43,6 +44,24 @@ for (let i = 1; i < 5; i++) {
     })
 }
 
+for (let i = 1; i < 5; i++) {
+    $("#num" + i).on("click", function() {
+        $.post('http://127.0.0.1:8084/' + 'main', {
+            first: parseInt($("#num" + i)[0].innerHTML)
+        }).then(res => {
+            var a = eval(res)
+            for (let i = 1; i < 5; i++) {
+                $('#name' + i)[0].innerHTML = a[i - 1].notename;
+                $('#notecontent' + i)[0].innerHTML = '&emsp;&emsp;' + a[i - 1].notecontent;
+                $('#tag' + i)[0].innerHTML = a[i - 1].tag;
+                $('#read_num' + i)[0].innerHTML = '阅读数：' + a[i - 1].read_num;
+            }
+        }, err => {
+            console.log(err);
+        })
+
+    })
+}
 
 function paging(num) {
     if (num <= 20) {
@@ -76,34 +95,34 @@ function paging(num) {
         }
     } else {
         $("#next").click(function() {
-            if ($("ul>#a>#num")[4].innerHTML !== parseInt(num / 4 + 1).toString()) {
+            if ($("ul>#a>")[4].innerHTML !== parseInt(num / 4 + 1).toString()) {
                 for (let i = 0; i < 5; i++) {
-                    $("ul>#a>#num")[i].innerHTML = (Number($("ul>#a>#num")[i].innerHTML) + 1).toString();
+                    $("ul>#a>")[i].innerHTML = (Number($("ul>#a>")[i].innerHTML) + 1).toString();
                 }
             }
-            if ($("ul>#a>#num")[0].innerHTML !== "1") {
+            if ($("ul>#a>")[0].innerHTML !== "1") {
                 $("#first").removeClass("disabled");
             }
-            if ($("ul>#a>#num")[4].innerHTML === parseInt(num / 4 + 1).toString()) {
+            if ($("ul>#a>")[4].innerHTML === parseInt(num / 4 + 1).toString()) {
                 $("#next").addClass("disabled");
             }
         })
         $("#first").click(function() {
-            if ($("ul>#a>#num")[0].innerHTML !== "1") {
+            if ($("ul>#a>")[0].innerHTML !== "1") {
                 for (let i = 0; i < 5; i++) {
-                    $("ul>#a>#num")[i].innerHTML = (Number($("ul>#a>#num")[i].innerHTML) - 1).toString();
+                    $("ul>#a>")[i].innerHTML = (Number($("ul>#a>")[i].innerHTML) - 1).toString();
                 }
             }
-            if ($("ul>#a>#num")[0].innerHTML === "1") {
+            if ($("ul>#a>")[0].innerHTML === "1") {
                 $("#first").addClass("disabled");
             }
-            if ($("ul>#a>#num")[4].innerHTML !== parseInt(num / 4 + 1).toString()) {
+            if ($("ul>#a>")[4].innerHTML !== parseInt(num / 4 + 1).toString()) {
                 $("#next").removeClass("disabled");
 
             }
         })
         $("[name='is']").click(function() {
-            if ($("ul>#a>#num")[4].innerHTML === parseInt(num / 4 + 1).toString()) {
+            if ($("ul>#a>")[4].innerHTML === parseInt(num / 4 + 1).toString()) {
                 for (let i = 3; i >= num % 4; i--) {
                     $("#article>a")[i].style.visibility = "hidden";
                 }
