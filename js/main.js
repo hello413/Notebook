@@ -64,7 +64,7 @@ for (let i = 1; i < 5; i++) {
 
 // $('#true').on("click", function() {
 //     $.post('http://127.0.0.1:8084/' + 'main', {
-//         condition: $('')
+//         condition: $('#search')[0].innerHTML
 //     }).then(res => {
 //         var a = eval(res)
 //         for (let i = 1; i < 5; i++) {
@@ -76,7 +76,6 @@ for (let i = 1; i < 5; i++) {
 //     }, err => {
 //         console.log(err);
 //     })
-
 // })
 
 function paging(num) {
