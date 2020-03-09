@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="notebook:war">
+    <output-path>$PROJECT_DIR$/notebook/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>notebook</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="notebook.war">
+      <element id="artifact" artifact-name="notebook:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>注册页面</title>
+    <link href="css/sign.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="container">
+            <h1>Sign up</h1>
+            <form>
+                <input type="text" placeholder="Your username" id="username" />
+                <input type="text" placeholder="Your email" id="email" />
+                <input type="password" placeholder="password" id="password" />
+                <input type="password" placeholder="Please confirm your password" id="passwords" />
+                <br>
+                <input type="button" value="Sign up" id="sign" />
+                <p class="change_link" align="center">
+                    <span class="text">Already have an account?</span>
+                    <a href="login.html" class="to_login"> Go and log in </a>
+                </p>
+            </form>
+        </div>
+        <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+</body>
+<script src="js/jquery.js"></script>
+<script>
+    $("#sign").click(async function(e) {
+        var email = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+        if (!$('#username').val() || !$('#password').val() || !$('#passwords').val() || !$('#email').val()) {
+            alert("信息输入不完整,注册失败")
+        } else if (email.test($('#email').val()) == false) {
+            alert("请输入正确的邮箱")
+        } else if ($('#password').val() !== $('#passwords').val()) {
+            alert("两次密码输入不一致")
+        }
+    })
+</script>
+
+</html>
