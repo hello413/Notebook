@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>写笔记</title>
+    <link rel="stylesheet" href="css/write-style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="markdown/editor.md-master/examples/css/style.css" />
+    <link rel="stylesheet" href="markdown/editor.md-master/css/editormd.css" />
+    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+    <div id="all">
+        <div style="font-size: 50px;height: 100px; text-align: center;color: #009689; font-weight: bold;">
+            <input type="text" placeholder="标题(0/100)" id="notename" style="border-bottom:4px solid; pointer-events: auto; width: 80%; height: 60px; font-size: 35px">
+            <button type="button" id="update" class="btn btn-danger">保存文章</button>
+        </div>
+        <div id="layout">
+            <div id="test-editormd">
+                <textarea style="display:none;" id="notecontent"></textarea>
+            </div>
+        </div>
+        <script src="markdown/editor.md-master/examples/js/jquery.min.js"></script>
+        <script src="markdown/editor.md-master/editormd.js"></script>
+        <script type="text/javascript">
+            var testEditor;
+            $(function() {
+                editormd.urls.atLinkBase = "https://github.com/";
+                testEditor = editormd("test-editormd", {
+                    width: "90%",
+                    height: 720,
+                    toc: true,
+                    todoList: true,
+                    path: 'markdown/editor.md-master/lib/'
+                });
+            });
+        </script>
+    </div>
+    <div id="back" class="hide">
+        <br>
+        <div id="up">
+            <div class="col-md-10 col-md-offset-1" id="m2">
+                <br>
+                <h2>个人信息</h2>
+                <br>
+                <h4>权限： &emsp;&emsp;
+                    <select style="width: 120px;" id="jurisd">
+                    <option value="1">public</option>
+                    <option value="2">private</option>
+                  </select></h4>
+                <br>
+                <h4>分类： &emsp;&emsp;<input type="text" style="width: 120px;" id="tag"></h4>
+                <br><br>
+                <div style="text-align:center" id="m0">
+                    <button type="button" class="btn btn-danger" style="width:70px" id="button1">确定</button> &emsp;&emsp;
+                    <button type="button" class="btn btn-info" style="width:70px" id="button2">取消</button>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="js/style.js"></script>
+
+</html>

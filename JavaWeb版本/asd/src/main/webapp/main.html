@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link href="css/main.css" rel="stylesheet" type="text/css" />
+    <script src="js/jquery-3.3.1.js"></script>
+</head>
+
+<script>
+    $.post("user/findself",{},function (data) {
+        $('#username').html(data.username)
+    })
+</script>
+<script>
+    $(function() {
+        load();
+    });
+    function load(currentPage) {
+        //发送ajax请求，请求route/pageQuery,传递cid
+        $.get("route/pageQuery", {
+            currentPage: currentPage
+        }, function(pb) {
+            //解析pagebean数据，展示到页面上
+            $("#Sum").html(pb.totalCount);
+            // $("#todaySum").html(lis);
+            // $("#seenSum").html(lis);
+            // $("#likeSum").html(lis);
+
+            var lis = "";
+
+            //计算上一页的页码
+            var beforeNum = pb.currentPage - 1;
+            if (beforeNum <= 0) {
+                beforeNum = 1;
+            }
+
+            var beforePage = '<li  onclick="javascipt:load(' +  beforeNum + ')" class="threeword"><a href="javascript:void(0)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+
+            lis += beforePage;
+            //1.2 展示分页页码
+            /*
+                1.一共展示10个页码，能够达到前5后4的效果
+                2.如果前边不够5个，后边补齐10个
+                3.如果后边不足4个，前边补齐10个
+            */
+
+            // 定义开始位置begin,结束位置 end
+            var begin; // 开始位置
+            var end; //  结束位置
+
+
+            //1.要显示5个页码
+            if (pb.totalPage < 5) {
+                //总页码不够10页
+
+                begin = 1;
+                end = pb.totalPage;
+            } else {
+                //总页码超过5页
+
+                begin = pb.currentPage - 3;
+                end = pb.currentPage + 2;
+
+                //2.如果前边不够5个，后边补齐10个
+                if (begin < 1) {
+                    begin = 1;
+                    end = begin + 4;
+                }
+
+                //3.如果后边不足4个，前边补齐10个
+                if (end > pb.totalPage) {
+                    end = pb.totalPage;
+                    begin = end - 4;
+                }
+            }
+
+
+            for (var i = begin; i <= end; i++) {
+                var li;
+                //判断当前页码是否等于i
+                if (pb.currentPage == i) {
+
+                    li = '<li class="curPage" onclick="javascipt:load(' +  i + ')"><a href="javascript:void(0)">' + i + '</a></li>';
+
+                } else {
+                    //创建页码的li
+                    li = '<li onclick="javascipt:load(' +  i + ')"><a href="javascript:void(0)">' + i + '</a></li>';
+                }
+                //拼接字符串
+                lis += li;
+            }
+            //计算上一页的页码
+            var lastNum = pb.currentPage + 1;
+            if (lastNum > pb.totalPage) {
+                lastNum = pb.currentPage;
+            }
+
+            var lastPage = '<li onclick="javascipt:load(' +  lastNum + ')" class="threeword"><a href="javascript:;"><span aria-hidden="true" aria-label="Next">&raquo;</span></a></li>';
+
+            lis += lastPage;
+
+            lis+=('<span style="font-size: 25px">&ensp;共<span>'+pb.totalPage+'</span>页,<span id="totalCount">'+pb.totalCount+'</span>条记录</span>\n' )
+
+            //将lis内容设置到 ul
+            $("#pageNum").html(lis);
+
+            //2.列表数据展示
+            var route_lis = "";
+
+            for (var i = 0; i < pb.list.length; i++) {
+                //获取{rid:1,rname:"xxx"}
+                var route = pb.list[i];
+                var li = '<li style="list-style: none">' +
+                    '                        <a href="read.html">'+
+                    '<div class="work1">'+
+                    '<div class="col-md-10 col-md-offset-1 work">'+
+                    '<br>'+
+                    '<button type="button" class="btn btn-danger" id="tag1">'+route.tag+'</button>'+
+                    '<font size="6px" id="name1">'+route.notename+'</font>'+
+                    '<span style="float: right">'+
+                    '<small style="color: #9d9d9d">'+route.starttime+'</small>&emsp;|&emsp;'+
+                '<small style="color: #9d9d9d" id="read_num1">阅读数：'+route.read_num+'</small>'+
+                '</span>'+
+                '<h5 id="notecontent1">&emsp;&emsp;'+route.notecontent+'</h5>'+
+                '</div>'+
+                '</div>'+
+                '</a></li>';
+                route_lis += li;
+            }
+            $("#route").html(route_lis);
+
+            //定位到页面顶部
+            window.scrollTo(0, 0);
+        });
+
+    }
+</script>
+<body>
+    <div id="head" class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-2 col-md-offset-2">
+                <h4>413笔记本</h4>
+            </div>
+            <div class="col-md-3 col-md-offset-3">
+                <div class="search">
+                    <input type="text" id="search">
+                    <button type="button" class="btn btn-default" aria-label="Left Align" id="true">
+                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                </button>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <a href="write.html">
+                    <button type="button" class="button-write">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        写文章
+                    </button>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <a href="javascript:location.href='user/exitit';">退出登录</a>
+        </div>
+    </div>
+    <hr>
+    <div id="main" class="row">
+        <div class="col-md-3 col-md-offset-1">
+            <div class="main-left">
+                <br><br>
+                <div style="text-align: center;">
+                    <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=132720517,1989090148&fm=15&gp=0.jpg" alt="网络不好" class="img-circle" width="80px">
+                </div>
+                <div style="height: 60px;text-align:center;color: cornflowerblue;" id="username"></div>
+                <div class="message" style="margin-left: 100px" id="news">
+                    <h4>总笔记数： <small id="Sum">100</small></h4><br>
+                    <h4>今日笔记数： <small id="todaySum">10</small></h4><br>
+                    <h4>访问量： <small id="seenSum">0</small></h4><br>
+                    <h4>获赞数： <small id="likeSum">0</small></h4>
+                </div>
+                <div style="height: 110px"></div>
+            </div>
+        </div>
+        <div class="col-md-7" style="border: 1px solid;border-radius: 10px" id="article">
+            <div style="height: 10px"></div>
+            <ul id="route"></ul>
+
+
+            <div class="main-bottom" style="text-align: center">
+                <br>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination" id="pageNum">
+
+                        <li><a href="#" id="num1">1</a></li>
+                        <li><a href="#" id="num2">2</a></li>
+                        <li><a href="#" id="num3">3</a></li>
+                        <li><a href="#" id="num4">4</a></li>
+                        <li><a href="#" id="num5">5</a></li>
+
+                        </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div style="height: 20px;"></div>
+</body>
+
+</html>
