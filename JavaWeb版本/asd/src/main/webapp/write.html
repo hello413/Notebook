@@ -11,6 +11,7 @@
     <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
 </head>
 
+
 <body>
     <div id="all">
         <div style="font-size: 50px;height: 100px; text-align: center;color: #009689; font-weight: bold;">
@@ -45,23 +46,50 @@
                 <br>
                 <h2>个人信息</h2>
                 <br>
-                <h4>权限： &emsp;&emsp;
-                    <select style="width: 120px;" id="jurisd">
-                    <option value="1">public</option>
-                    <option value="2">private</option>
-                  </select></h4>
-                <br>
-                <h4>分类： &emsp;&emsp;<input type="text" style="width: 120px;" id="tag"></h4>
+<!--                <h4>权限： &emsp;&emsp;-->
+<!--                    <select style="width: 120px;" id="jurisd">-->
+<!--                    <option value="1">public</option>-->
+<!--                    <option value="2">private</option>-->
+<!--                  </select></h4>-->
+<!--                <br>-->
+                <h4>分类： &emsp;&emsp;<input type="text" style="width: 120px;" id="tag" /></h4>
                 <br><br>
                 <div style="text-align:center" id="m0">
-                    <button type="button" class="btn btn-danger" style="width:70px" id="button1">确定</button> &emsp;&emsp;
-                    <button type="button" class="btn btn-info" style="width:70px" id="button2">取消</button>
+                    <button type="button" class="btn btn-danger" style="width:70px;color:black;" id="button1">确定</button> &emsp;&emsp;
+                    <button type="button" class="btn btn-info" style="color:black;width:70px" id="button2">取消</button>
                 </div>
                 <br>
             </div>
         </div>
     </div>
 </body>
-<script src="js/style.js"></script>
-
+<script>
+    $(function () {
+        $("#update").on("click", function() {
+            $("#all").addClass("all");
+            $("#back").removeClass("hide");
+            $("#button1").click(async function() {
+                if (!$('#notename').val() || !$('#notecontent').val() || !$('#tag').val()) {
+                    alert("信息输入不完整,添加失败")
+                } else {
+                    $.post("route/write", {
+                        notename: $('#notename').val(),
+                        notecontent: $('#notecontent').val(),
+                        tag: $('#tag').val()
+                    },function (data) {
+                        if (data){
+                            location.href='/travel/main.html';
+                        }else {
+                            alert("添加失败，请稍后重试")
+                        }
+                    })
+                }
+            })
+            $("#button2").on("click", function() {
+                $("#back").addClass("hide");
+                $("#all").removeClass("all");
+            })
+        });
+    })
+</script>
 </html>

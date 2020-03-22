@@ -1,6 +1,8 @@
 package com.itpainter.domain;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * 旅游线路商品实体类
@@ -14,7 +16,7 @@ public class Route implements Serializable {
     private String notecontent;
     private int like_num;
     private int read_num;
-    private String starttime;
+    private Timestamp starttime;
     public int getN_id() {
         return n_id;
     }
@@ -71,18 +73,18 @@ public class Route implements Serializable {
         this.read_num = read_num;
     }
 
-    public String getStarttime() {
+    public Timestamp getStarttime() {
         return starttime;
     }
 
-    public void setStarttime(String starttime) {
+    public void setStarttime(Timestamp starttime) {
         this.starttime = starttime;
     }
 
     public Route() {
     }
 
-    public Route(int n_id, String notename, String tag, int user_id, String notecontent, int like_num, int read_num, String starttime) {
+    public Route(int n_id, String notename, String tag, int user_id, String notecontent, int like_num, int read_num, Timestamp starttime) {
         this.n_id = n_id;
         this.notename = notename;
         this.tag = tag;

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>改笔记</title>
     <link rel="stylesheet" href="css/write-style.css">
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="markdown/editor.md-master/examples/css/style.css" />
     <link rel="stylesheet" href="markdown/editor.md-master/css/editormd.css" />
     <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
@@ -45,12 +45,6 @@
                 <br>
                 <h2>个人信息</h2>
                 <br>
-                <h4>权限： &emsp;&emsp;
-                    <select style="width: 120px;" id="jurisd">
-                    <option value="1">public</option>
-                    <option value="2">private</option>
-                  </select></h4>
-                <br>
                 <h4>分类： &emsp;&emsp;<input type="text" style="width: 120px;" id="tag"></h4>
                 <br><br>
                 <div style="text-align:center" id="m0">
@@ -62,33 +56,29 @@
         </div>
     </div>
 </body>
+<script src="js/getParameter.js"></script>
 <script>
-    $.post('http://127.0.0.1:8084/' + 'read', {}).then(res => {
-        var a = eval(res)
-        $("#notename").val(a[0].notename)
-        $('#tag').val(a[0].tag)
-        $('#notecontent')[0].innerHTML = a[0].notecontent
-    }, err => {
-        console.log(err);
+    var n_id = getParameter("n_id")
+    $.post("route/read", {n_id:n_id}, function(data) {
+        $('#notename')[0].value=data.notename
+        $('#notecontent').html(data.notecontent)
+        $('#tag')[0].value=data.tag
     })
     $("#update").on("click", function() {
         $("#all").addClass("all");
         $("#back").removeClass("hide");
         $("#button1").click(async function(e) {
-            if (!$('#notename').val() || !$('#notecontent').val() || !$('#jurisd').val() || !$('#tag').val()) {
+            if (!$('#notename').val() || !$('#notecontent').val()|| !$('#tag').val()) {
                 alert("信息输入不完整,修改失败")
             } else {
-                $.post('http://127.0.0.1:8084/' + 'update', {
+                $.post('route/update', {
                     notename: $('#notename').val(),
                     notecontent: $('#notecontent').val(),
-                    tag: $('#tag').val()
-                }).then(res => {
-                    alert(res)
-                }, err => {
-                    console.log(err);
+                    tag: $('#tag').val(),
+                    n_id:n_id
+                },function () {
+                    window.location.href="http://localhost:8082/travel/main.html";
                 })
-                $("#back").addClass("hide");
-                $("#all").removeClass("all");
             }
         })
         $("#button2").on("click", function() {

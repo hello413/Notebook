@@ -6,12 +6,46 @@
     <title>读文章</title>
     <script src="js/jquery-1.11.0.min.js"></script>
     <link href="css/read.css" rel="stylesheet">
-    <script type="text/javascript" href="js/read.js"></script>
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <script type="text/javascript" src="js/bootstrap.js"></script>
 
 </head>
-
+<script>
+    $.post("user/findself",{},function (data) {
+        $('#username').html(data.username+"的笔记")
+    })
+    $.post("route/pageQuery",{},function (data) {
+        $('#Sum').html(data.totalCount);
+    })
+</script>
+<script src="js/getParameter.js"></script>
+<script>
+    function getdate(date) {
+        var now = new Date(date),
+            y = now.getFullYear(),
+            m = now.getMonth() + 1,
+            d = now.getDate();
+        return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substr(0, 8);
+    }
+    var n_id =getParameter("n_id");
+    $.post("route/read", {n_id:n_id}, function(data) {
+        $('#notename').html(data.notename)
+        $('#notecontent').html(data.notecontent)
+        $('#tag').html(data.tag)
+        $('#starttime').html(getdate(data.starttime))
+        $('#like_num').html(data.read_num+"人阅读")
+    })
+    $.post("route/readsum", {}, function(data) {
+        $('#birthday0').html(data.todaywritesum)
+        $('#seenSum').html(data.readsum)
+        if (data.readsum>99){
+            $('#read').html("99+");
+        }else {
+            $('#read').html(data.readsum);
+        }
+        $('#likeSum').html(data.likesum)
+    })
+</script>
 <body>
     <header>
         <nav class="navbar square  navbar-inverse navabar-fixed-top ">
@@ -31,10 +65,10 @@
                         </a>
                         <ul style="list-style: none">
                             <li>
-                                <div style="height: 25px;line-height: 25px;text-align: center"><a href="writeupdate.html">编辑</a></div>
+                                <div style="height: 25px;line-height: 25px;text-align: center"><a href="#" id="update">编辑</a></div>
                             </li>
                             <li>
-                                <div style="height: 25px;line-height: 25px;text-align: center"><a href="#" id="delete">删除</a></div>
+                                <div style="height: 25px;line-height: 25px;text-align: center" ><a href="#" id="delete">删除</a></div>
                             </li>
                             <li>
                                 <div style="height: 25px;line-height: 25px;text-align: center"><a href="write.html">写博客</a></div>
@@ -50,7 +84,7 @@
     </header>
     <section class="section1">
         <div class="container header" id="blog_title">
-            <h2><a href="main.html" id="name">YeKongle的笔记</a></h2>
+            <h2><a href="main.html" id="username">YeKongle的笔记</a></h2>
             <div class="row">
                 <div class="col-xs-6">
                     <span> <h4 style="color: #FF8C00">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;——低调、博学、修身</h4>  </span>
@@ -92,7 +126,7 @@
                                     <button class="btn btn-info"><span class="fa fa-envelope fa-sm">发私信</span></button>
                                 </div>
                                 <hr>
-                                <p>访问:&nbsp;&nbsp;<span class="badge badge-orange">99+</span></p>
+                                <p>访问:&nbsp;&nbsp;<span class="badge badge-orange" id="read">99+</span></p>
                                 <p>积分:&nbsp;&nbsp;<span class="badge badge-success">60</span></p>
                                 <p>等级:&nbsp;&nbsp;<span class="badge badge-info">小菜鸟</span></p>
                                 <p>排名:&nbsp;&nbsp;<span class="badge">千里之外</span></p>
@@ -135,8 +169,8 @@
                                         </h2>
                                     </div>
                                     <div class="pull-right" style="display: inline;color: #ccc;">
-                                        <span class="">2017-08-15 21:52</span>|
-                                        <span class="fa fa-search-minus">1人阅读</span>|
+                                        <span class="" style="color: #3e999f" id="starttime">2017-08-15 21:52</span>|
+                                        <span class="fa fa-search-minus" style="color: #7F007F;" id="like_num">1人阅读</span>|
                                         <span class="fa fa-comment-0" style="color: #FF4500;">评论 </span>|
                                         <span class="" style="color: #3e8f3e">收藏</span>
                                     </div>
@@ -184,40 +218,17 @@
     });
 </script>
 <script>
-    $.post('http://127.0.0.1:8084/' + 'read', {}).then(res => {
-        var a = eval(res)
-        $('#notename')[0].innerHTML = a[0].notename
-        $('#tag')[0].innerHTML = a[0].tag + '&nbsp;<span class="caret"></span>&nbsp;'
-        $('#notecontent')[0].innerHTML = '&nbsp;&nbsp;' + a[0].notecontent
-    }, err => {
-        console.log(err);
-    })
-    $.post('http://127.0.0.1:8084/' + 'name', {}).then(res => {
-        $('#name')[0].innerHTML = res + '的笔记'
-    }, err => {
-        console.log(err);
-    })
-    $.post('http://127.0.0.1:8084/' + 'message', {}).then(res => {
-        var a = eval(res)
-        $('#Sum')[0].innerHTML = a[0].count0;
-        if (a[0].sum0 != null) {
-            $('#seenSum')[0].innerHTML = a[0].sum0;
+    $("#delete").click(function () {
+        if(confirm("您确定要删除吗？")){
+            var n_id=getParameter("n_id")
+            window.location.href ="http://localhost:8082/travel/route/delete?n_id="+n_id;
         }
-        if (a[0].sum1 != null) {
-            $('#likeSum')[0].innerHTML = a[0].sum1;
-        }
-    }, err => {
-        console.log(err);
     })
-
-    $("#delete").click(async function(e) {
-        $.post('http://127.0.0.1:8084/' + 'delete', {}).then(res => {
-            alert(res)
-            window.location.href = "main.html";
-        }, err => {
-            console.log(err);
-        })
+    $("#update").click(function () {
+        if(confirm("您确定要修改吗？")){
+            var n_id=getParameter("n_id")
+            window.location.href ="http://localhost:8082/travel/writeupdate.html?n_id="+n_id;
+        }
     })
 </script>
-
 </html>

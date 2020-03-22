@@ -3,41 +3,56 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title>主页</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link href="css/main.css" rel="stylesheet" type="text/css" />
     <script src="js/jquery-3.3.1.js"></script>
 </head>
-
+<script src="js/getParameter.js"></script>
 <script>
     $.post("user/findself",{},function (data) {
         $('#username').html(data.username)
     })
 </script>
 <script>
+    //线路名称
     $(function() {
-        load();
+        rname=getParameter("rname")
+        if (rname){
+            rname=window.decodeURIComponent(rname)
+        }
+        load(null,rname);
     });
-    function load(currentPage) {
+    function getdate(date) {
+        var now = new Date(date),
+            y = now.getFullYear(),
+            m = now.getMonth() + 1,
+            d = now.getDate();
+        return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substr(0, 8);
+    }
+    function load(currentPage,rname) {
+        $.post("route/readsum", {}, function(data) {
+            $('#todaySum').html(data.todaywritesum)
+            $('#seenSum').html(data.readsum)
+            $('#likeSum').html(data.likesum)
+        })
+        $.post("route/pageQuery",{},function (data) {
+            $('#Sum').html(data.totalCount);
+        })
         //发送ajax请求，请求route/pageQuery,传递cid
-        $.get("route/pageQuery", {
-            currentPage: currentPage
+        $.post("route/pageQuery", {
+            currentPage: currentPage,
+            rname:rname
         }, function(pb) {
-            //解析pagebean数据，展示到页面上
-            $("#Sum").html(pb.totalCount);
-            // $("#todaySum").html(lis);
-            // $("#seenSum").html(lis);
-            // $("#likeSum").html(lis);
-
             var lis = "";
-
             //计算上一页的页码
             var beforeNum = pb.currentPage - 1;
             if (beforeNum <= 0) {
                 beforeNum = 1;
             }
 
-            var beforePage = '<li  onclick="javascipt:load(' +  beforeNum + ')" class="threeword"><a href="javascript:void(0)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+            var beforePage = '<li  onclick="javascipt:load(' +  beforeNum +',\''+rname+ '\')" class="threeword"><a href="javascript:void(0)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
 
             lis += beforePage;
             //1.2 展示分页页码
@@ -50,8 +65,6 @@
             // 定义开始位置begin,结束位置 end
             var begin; // 开始位置
             var end; //  结束位置
-
-
             //1.要显示5个页码
             if (pb.totalPage < 5) {
                 //总页码不够10页
@@ -61,7 +74,7 @@
             } else {
                 //总页码超过5页
 
-                begin = pb.currentPage - 3;
+                begin = pb.currentPage - 2;
                 end = pb.currentPage + 2;
 
                 //2.如果前边不够5个，后边补齐10个
@@ -83,11 +96,11 @@
                 //判断当前页码是否等于i
                 if (pb.currentPage == i) {
 
-                    li = '<li class="curPage" onclick="javascipt:load(' +  i + ')"><a href="javascript:void(0)">' + i + '</a></li>';
+                    li = '<li class="curPage" onclick="javascipt:load(' +  i +',\''+rname+ '\')"><a href="javascript:void(0)">' + i + '</a></li>';
 
                 } else {
                     //创建页码的li
-                    li = '<li onclick="javascipt:load(' +  i + ')"><a href="javascript:void(0)">' + i + '</a></li>';
+                    li = '<li onclick="javascipt:load(' +  i +',\''+rname+  '\')"><a href="javascript:void(0)">' + i + '</a></li>';
                 }
                 //拼接字符串
                 lis += li;
@@ -98,7 +111,7 @@
                 lastNum = pb.currentPage;
             }
 
-            var lastPage = '<li onclick="javascipt:load(' +  lastNum + ')" class="threeword"><a href="javascript:;"><span aria-hidden="true" aria-label="Next">&raquo;</span></a></li>';
+            var lastPage = '<li onclick="javascipt:load(' +  lastNum+',\''+ rname + '\')" class="threeword"><a href="javascript:;"><span aria-hidden="true" aria-label="Next">&raquo;</span></a></li>';
 
             lis += lastPage;
 
@@ -113,18 +126,26 @@
             for (var i = 0; i < pb.list.length; i++) {
                 //获取{rid:1,rname:"xxx"}
                 var route = pb.list[i];
+                var nname =route.notename;
+                if (nname.length>12){
+                    nname = nname.substring(0,11)+"..."
+                }
+                var ncontent = route.notecontent;
+                if (ncontent.length>50){
+                    ncontent = ncontent.substring(0,49)+"..."
+                }
                 var li = '<li style="list-style: none">' +
-                    '                        <a href="read.html">'+
+                    '                        <a href="read.html?n_id='+route.n_id+'">'+
                     '<div class="work1">'+
                     '<div class="col-md-10 col-md-offset-1 work">'+
                     '<br>'+
                     '<button type="button" class="btn btn-danger" id="tag1">'+route.tag+'</button>'+
-                    '<font size="6px" id="name1">'+route.notename+'</font>'+
+                    '<font size="6px" id="name1">'+nname+'</font>'+
                     '<span style="float: right">'+
-                    '<small style="color: #9d9d9d">'+route.starttime+'</small>&emsp;|&emsp;'+
+                    '<small style="color: #9d9d9d">'+getdate(route.starttime)+'</small>&emsp;|&emsp;'+
                 '<small style="color: #9d9d9d" id="read_num1">阅读数：'+route.read_num+'</small>'+
                 '</span>'+
-                '<h5 id="notecontent1">&emsp;&emsp;'+route.notecontent+'</h5>'+
+                '<h5 id="notecontent1">&emsp;&emsp;'+ncontent+'</h5>'+
                 '</div>'+
                 '</div>'+
                 '</a></li>';
@@ -146,8 +167,8 @@
             </div>
             <div class="col-md-3 col-md-offset-3">
                 <div class="search">
-                    <input type="text" id="search">
-                    <button type="button" class="btn btn-default" aria-label="Left Align" id="true">
+                    <input type="text" id="search-input">
+                    <button type="button" class="btn btn-default" aria-label="Left Align" id="search-button">
                   <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                 </button>
                 </div>
@@ -192,19 +213,24 @@
                 <br>
                 <nav aria-label="Page navigation">
                     <ul class="pagination" id="pageNum">
-
                         <li><a href="#" id="num1">1</a></li>
                         <li><a href="#" id="num2">2</a></li>
                         <li><a href="#" id="num3">3</a></li>
                         <li><a href="#" id="num4">4</a></li>
                         <li><a href="#" id="num5">5</a></li>
-
-                        </ul>
+                    </ul>
                 </nav>
             </div>
         </div>
     </div>
     <div style="height: 20px;"></div>
 </body>
-
+<script>
+    $("#search-button").click(function () {
+        var rname = $("#search-input").val();
+        rname = encodeURIComponent(rname)
+        // 跳转路径 http://localhost/travel/route_list.html?cid=5，拼接上rname=xxx
+        location.href="http://localhost:8082/travel/main.html?rname="+rname;
+    });
+</script>
 </html>

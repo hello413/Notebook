@@ -1,18 +1,18 @@
 $("#update").on("click", function() {
+    alert("000000000")
     $("#all").addClass("all");
     $("#back").removeClass("hide");
-    $("#button1").click(async function(e) {
-        if (!$('#notename').val() || !$('#notecontent').val() || !$('#jurisd').val() || !$('#tag').val()) {
+    $("#button1").click(async function() {
+        if (!$('#notename').val() || !$('#notecontent').val() || !$('#tag').val()) {
             alert("信息输入不完整,添加失败")
         } else {
-            $.post('http://127.0.0.1:8084/' + 'write', {
+            alert("11111111")
+            $.post("route/write", {
                 notename: $('#notename').val(),
                 notecontent: $('#notecontent').val(),
                 tag: $('#tag').val()
-            }).then(res => {
-                alert(res)
-            }, err => {
-                console.log(err);
+            },function f(data) {
+                alert(data);
             })
             $("#back").addClass("hide");
             $("#all").removeClass("all");
